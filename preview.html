@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Galaxy Memory</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+background:black;
+color:white;
+font-family:'Poppins',sans-serif;
+text-align:center;
+overflow:hidden;
+}
+
+h1{
+font-family:'Pacifico',cursive;
+font-size:45px;
+text-shadow:0 0 15px white;
+}
+
+#login{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:rgba(0,0,0,0.7);
+padding:40px;
+border-radius:15px;
+}
+
+input{
+padding:10px;
+font-size:16px;
+border-radius:5px;
+border:none;
+}
+
+button{
+padding:10px 20px;
+font-size:16px;
+border:none;
+border-radius:5px;
+background:#444;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+background:#666;
+}
+
+#main{
+display:none;
+}
+
+.star{
+position:absolute;
+width:3px;
+height:3px;
+background:white;
+border-radius:50%;
+box-shadow:0 0 10px white;
+cursor:pointer;
+}
+
+.meteor{
+position:absolute;
+width:3px;
+height:3px;
+background:white;
+box-shadow:0 0 10px white;
+}
+
+#questionBox{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(0,0,0,0.7);
+padding:20px;
+border-radius:10px;
+width:70%;
+}
+
+#scoreBox{
+position:fixed;
+top:20px;
+right:20px;
+background:rgba(0,0,0,0.7);
+padding:10px;
+border-radius:10px;
+}
+
+#gallery{
+position:fixed;
+left:10px;
+top:20px;
+background:rgba(0,0,0,0.7);
+padding:10px;
+border-radius:10px;
+}
+
+.memory{
+width:120px;
+border-radius:10px;
+margin:5px;
+box-shadow:0 0 10px white;
+transition:0.3s;
+}
+
+.memory:hover{
+transform:scale(1.1);
+}
+
+#popup{
+position:fixed;
+top:25%;
+left:50%;
+transform:translateX(-50%);
+background:black;
+padding:20px;
+border-radius:10px;
+display:none;
+}
+
+.heart{
+position:absolute;
+font-size:25px;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="login">
+
+<h2>Portal Rahasia</h2>
+
+<p>Masukkan kode</p>
+
+<input id="code" type="password">
+
+<br><br>
+
+<button onclick="login()">Masuk</button>
+
+<p id="loginMsg"></p>
+
+</div>
+
+
+<!-- MAIN -->
+
+<div id="main">
+
+<h1>Halo Ayya 🌌</h1>
+
+<audio id="music" loop>
+<source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div id="scoreBox">
+Game ⭐<br>
+Score: <span id="score">0</span>
+</div>
+
+<div id="gallery">
+
+<h3>Kenangan</h3>
+
+<img src="foto1.jpg" class="memory">
+<img src="foto2.jpg" class="memory">
+<img src="foto3.jpg" class="memory">
+
+</div>
+
+<div id="questionBox">
+
+<p id="question"></p>
+
+<button onclick="nextQuestion()">Lanjut</button>
+
+</div>
+
+<div id="popup"></div>
+
+</div>
+
+
+<script>
+
+/* LOGIN */
+
+function login(){
+
+let code=document.getElementById("code").value
+
+if(code==="081108"){
+
+document.getElementById("login").style.display="none"
+document.getElementById("main").style.display="block"
+
+document.getElementById("music").play()
+
+createStars()
+meteorShower()
+heartGame()
+nextQuestion()
+
+}
+else{
+
+document.getElementById("loginMsg").innerText="Kode salah"
+
+}
+
+}
+
+
+/* GAME SCORE */
+
+let score=0
+
+
+/* BINTANG */
+
+function createStars(){
+
+for(let i=0;i<500;i++){
+
+let star=document.createElement("div")
+
+star.className="star"
+
+star.style.top=Math.random()*100+"vh"
+star.style.left=Math.random()*100+"vw"
+
+star.onclick=function(){
+
+score++
+document.getElementById("score").innerText=score
+
+showMessage()
+
+}
+
+document.body.appendChild(star)
+
+}
+
+}
+
+
+/* METEOR */
+
+function meteorShower(){
+
+setInterval(()=>{
+
+let meteor=document.createElement("div")
+
+meteor.className="meteor"
+
+meteor.style.left=Math.random()*window.innerWidth+"px"
+meteor.style.top="0px"
+
+meteor.onclick=function(){
+
+score+=10
+document.getElementById("score").innerText=score
+
+}
+
+document.body.appendChild(meteor)
+
+let fall=setInterval(()=>{
+
+meteor.style.top=meteor.offsetTop+10+"px"
+meteor.style.left=meteor.offsetLeft-5+"px"
+
+},20)
+
+setTimeout(()=>{
+
+clearInterval(fall)
+meteor.remove()
+
+},2000)
+
+},3000)
+
+}
+
+
+/* GAME HATI */
+
+function heartGame(){
+
+setInterval(()=>{
+
+let heart=document.createElement("div")
+
+heart.className="heart"
+
+heart.innerHTML="❤️"
+
+heart.style.left=Math.random()*window.innerWidth+"px"
+heart.style.top="0px"
+
+document.body.appendChild(heart)
+
+let fall=setInterval(()=>{
+
+heart.style.top=heart.offsetTop+10+"px"
+
+},20)
+
+heart.onclick=function(){
+
+score+=5
+document.getElementById("score").innerText=score
+heart.remove()
+
+}
+
+setTimeout(()=>{
+
+clearInterval(fall)
+heart.remove()
+
+},4000)
+
+},5000)
+
+}
+
+
+/* PERTANYAAN */
+
+let questions=[
+
+"Apakah kamu baik-baik saja hari ini?",
+"Apakah kamu suka melihat langit malam?",
+"Apakah kamu ingat kenangan yang pernah membuatmu tersenyum?",
+"Apakah kamu percaya manusia bisa berubah?",
+"Jika melihat bintang jatuh apa harapanmu?",
+"Apakah menurutmu kenangan itu penting?",
+"Apakah menurutmu waktu bisa mengubah banyak hal?",
+"Apakah kamu menikmati perjalanan kecil ini?",
+"Apakah menurutmu setiap cerita memiliki arti?",
+"Apakah kamu siap melihat pesan terakhir?"
+
+]
+
+let q=0
+
+function nextQuestion(){
+
+if(q<questions.length){
+
+document.getElementById("question").innerText=questions[q]
+
+q++
+
+}
+else{
+
+ending()
+
+}
+
+}
+
+
+/* KATA RANDOM */
+
+let messages=[
+
+"Kadang manusia baru mengerti sesuatu setelah semuanya berlalu.",
+"Kenangan yang baik tidak pernah benar-benar hilang.",
+"Langit malam terlihat tenang meskipun banyak bintang jatuh.",
+"Setiap cerita selalu meninggalkan pelajaran.",
+"Terima kasih sudah datang ke langit kecil ini.",
+"Beberapa kenangan selalu tinggal di langit malam.",
+"Setiap bintang adalah kenangan kecil."
+
+]
+
+function showMessage(){
+
+let popup=document.getElementById("popup")
+
+popup.innerText=messages[Math.floor(Math.random()*messages.length)]
+
+popup.style.display="block"
+
+setTimeout(()=>{
+
+popup.style.display="none"
+
+},2000)
+
+}
+
+
+/* ENDING */
+
+function ending(){
+
+document.getElementById("questionBox").innerHTML=`
+
+<h2>Pesan</h2>
+
+<p>
+Terima kasih sudah menyelesaikan perjalanan kecil ini.
+</p>
+
+<p>
+Langit penuh bintang ini seperti kenangan yang pernah ada.
+</p>
+
+<p>
+Semoga kamu selalu bahagia.
+</p>
+
+`
+
+}
+
+
+/* ANTI EXIT */
+
+window.onbeforeunload=function(){
+
+return "Perjalanan ini belum selesai."
+
+}
+
+</script>
+
+</body>
+</html>
